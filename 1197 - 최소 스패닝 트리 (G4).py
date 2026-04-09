@@ -13,30 +13,41 @@ v, e = map(int, input().split())
 edges = []
 
 for _ in range(e):
-    u, v, w = map(int, input().split())
-    edges.append((w, u, v))
+    a, b, c = map(int, input().split())
+    edges.append((c, a, b))
 
 parent = [i for i in range(v+1)] # parent[n] = n이 속한 union의 대표값
-mst = {i: [] for i in range(v+1)} # 기록용 최소신장트리
+size = [1 for i in range(v+1)] # size[n] = n이 속한 union의 크기
+mst_weight = 0
 
 def find(x):
     # x의 대표값은?
-    if parent[x] == x:
-        return x
-    else:
-        return find(parent[x])
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]
+        x = parent[x]
+    return x
 
 def union(x, y):
     # x, y의 union을 합친다
     x = find(x)
     y = find(y)
-    parent[y] = x
+    if size[x]>=size[y]: 
+        parent[y] = x
+        size[x] += size[y]
+    else: 
+        parent[x] = y
+        size[y] += size[x]
 
+v_cnt = 0
 for weight, st, ed in sorted(edges):
-    if find(st) != find(ed):
-        union(st, ed)
-        mst[st].append((ed, weight))
-        mst[ed].append((st, weight))
+    rs, re = find(st), find(ed)
+    if rs != re:
+        union(rs, re)
+        mst_weight += weight
+        v_cnt += 1
+        if v_cnt == v - 1:
+            break
 
-print(parent)
-print(mst)
+print(mst_weight)
+        
+
