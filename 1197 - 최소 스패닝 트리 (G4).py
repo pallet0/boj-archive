@@ -50,4 +50,3 @@ for weight, st, ed in sorted(edges):
 
 print(mst_weight)
         
-
